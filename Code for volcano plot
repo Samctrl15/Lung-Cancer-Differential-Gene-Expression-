@@ -1,0 +1,56 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load your data
+df = pd.read_csv('lung_cancer_file.txt', sep='\t')
+
+# Calculate -log10(p-value)
+df['neg_log_p'] = -np.log10(df['adj.P.Val'])
+
+# Classify each gene
+def classify(row):
+    if row['logFC'] > 1.5 and row['adj.P.Val'] < 0.05:
+        return 'Upregulated'
+    elif row['logFC'] < -1.5 and row['adj.P.Val'] < 0.05:
+        return 'Downregulated'
+    else:
+        return 'Not Significant'
+
+df['Status'] = df.apply(classify, axis=1)
+
+# Plot
+colors = {'Upregulated': 'red', 'Downregulated': 'blue', 'Not Significant': 'grey'}
+
+plt.figure(figsize=(12, 8))
+for status, color in colors.items():
+    subset = df[df['Status'] == status]
+    plt.scatter(subset['logFC'], subset['neg_log_p'], c=color, label=status, alpha=0.5, s=10)
+
+plt.axvline(1.5, linestyle='--', color='black')
+plt.axvline(-1.5, linestyle='--', color='black')
+plt.axhline(-np.log10(0.05), linestyle='--', color='black')
+
+# Label top 5 upregulated and top 5 downregulated genes
+top_up = df[df['Status'] == 'Upregulated'].sort_values('adj.P.Val').head(5)
+top_down = df[df['Status'] == 'Downregulated'].sort_values('adj.P.Val').head(5)
+
+for _, row in pd.concat([top_up, top_down]).iterrows():
+    gene_name = str(row['Gene.symbol']).split('///')[0]
+    plt.annotate(
+        gene_name,
+        xy=(row['logFC'], row['neg_log_p']),
+        xytext=(5, 5),
+        textcoords='offset points',
+        fontsize=9,
+        fontweight='bold'
+    )
+
+plt.xlabel('log2 Fold Change')
+plt.ylabel('-log10(adjusted p-value)')
+plt.title('Volcano Plot: Lung Tumor vs Normal (Top Genes Labeled)')
+plt.legend()
+plt.savefig('volcano_plot.png', dpi=300)
+plt.show()
+
+print("Done! Check volcano_plot.png in your project folder.")
