@@ -1,0 +1,35 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load your data
+df = pd.read_csv('lung_cancer_file.txt', sep='\t')
+
+# Get top 25 most significant genes
+top_genes = df.sort_values('adj.P.Val').head(25).copy()
+top_genes['Gene.symbol'] = top_genes['Gene.symbol'].apply(lambda x: str(x).split('///')[0])
+
+genes = top_genes['Gene.symbol'].values
+logfc_values = top_genes['logFC'].values.reshape(-1, 1)
+
+# Plot
+fig, ax = plt.subplots(figsize=(4, 10))
+im = ax.imshow(logfc_values, cmap='RdBu_r', aspect='auto', vmin=-6, vmax=6)
+
+ax.set_yticks(np.arange(len(genes)))
+ax.set_yticklabels(genes)
+ax.set_xticks([])
+
+for i, val in enumerate(logfc_values):
+    ax.text(0, i, f'{val[0]:.2f}', ha='center', va='center',
+             color='white' if abs(val[0]) > 3 else 'black', fontsize=8)
+
+cbar = fig.colorbar(im, ax=ax)
+cbar.set_label('log2 Fold Change')
+
+plt.title('Top 25 Most Significant Genes\n(Lung Tumor vs Normal)')
+plt.tight_layout()
+plt.savefig('heatmap.png', dpi=300)
+plt.show()
+
+print("Done! Check heatmap.png in your project folder.")
