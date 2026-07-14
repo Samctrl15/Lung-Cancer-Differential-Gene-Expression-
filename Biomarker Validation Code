@@ -1,0 +1,39 @@
+import pandas as pd
+
+# Load your data
+df = pd.read_csv('lung_cancer_file.txt', sep='\t')
+
+# Clean up gene symbols
+df['Gene.symbol'] = df['Gene.symbol'].apply(lambda x: str(x).split('///')[0])
+
+# Well-known lung cancer / NSCLC biomarkers from literature
+known_biomarkers = {
+    'MKI67': 'Ki-67 — standard clinical proliferation marker used in pathology',
+    'TOP2A': 'Topoisomerase II alpha — proliferation marker, chemotherapy target',
+    'CDK1': 'Cell division kinase — cell cycle driver, drug target',
+    'CCNB1': 'Cyclin B1 — cell cycle regulator, prognostic marker in NSCLC',
+    'EGFR': 'Epidermal growth factor receptor — major NSCLC drug target (e.g. gefitinib)',
+    'TP53': 'Tumor protein p53 — most commonly mutated gene in cancer',
+    'MMP1': 'Matrix metalloproteinase 1 — tumor invasion marker',
+    'MMP9': 'Matrix metalloproteinase 9 — tumor invasion/metastasis marker',
+    'CEACAM5': 'CEA — classic clinical tumor marker (blood test marker)',
+    'SFTPC': 'Surfactant protein C — normal lung marker, often lost in tumors',
+    'AGER': 'RAGE receptor — normal lung tissue marker, downregulated in NSCLC',
+    'KRT19': 'Cytokeratin 19 — epithelial marker used in lung cancer diagnostics',
+    'VEGFA': 'Vascular endothelial growth factor — angiogenesis driver, drug target',
+    'PTGS2': 'COX-2 — inflammation-linked cancer marker',
+    'BIRC5': 'Survivin — apoptosis inhibitor, cancer prognostic marker'
+}
+
+# Filter significant genes
+significant = df[(df['adj.P.Val'] < 0.05) & (abs(df['logFC']) > 1.5)]
+
+# Check overlap with known biomarkers
+found = significant[significant['Gene.symbol'].isin(known_biomarkers.keys())]
+
+print(f"Out of {len(significant)} significant genes, {len(found)} match known clinical biomarkers:\n")
+
+for _, row in found.sort_values('adj.P.Val').iterrows():
+    gene = row['Gene.symbol']
+    direction = "Upregulated" if row['logFC'] > 0 else "Downregulated"
+    print(f"• {gene} ({direction}, logFC={row['logFC']:.2f}) — {known_biomarkers[gene]}")
