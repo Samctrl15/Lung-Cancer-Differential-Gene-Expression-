@@ -1,0 +1,26 @@
+Cross-Validation: GSE19188
+
+Independent validation of the GSE18842 differential expression findings using GSE19188, a second NSCLC microarray dataset (91 tumor vs. 65 normal, Affymetrix GPL570 — same platform as GSE18842).
+
+Method
+Differential expression run independently on GSE19188 via GEO2R (limma), same thresholds as GSE18842: adj. p-value < 0.05, |log2FC| > 1.5
+Upregulated and downregulated gene lists compared against GSE18842's lists for overlap
+Overlapping (validated) gene sets carried forward into pathway enrichment (Enrichr: KEGG, MSigDB Hallmark, GO BP)
+12-gene clinical biomarker panel checked for correct direction and significance in both datasets
+
+Note: GSE19188's initial GEO2R export had a reversed tumor/normal contrast direction, caught via biological anchor genes (TOP2A/CDK1/CCNB1/MKI67 should be up in tumor; AGER/SFTPC should be down). Fixed by relabeling files and flipping logFC signs before comparison.
+
+Results
+Direction	Overlap with GSE18842	% of GSE19188 replicated
+Upregulated	328 genes	91.6%
+Downregulated	719 genes	84.0%
+
+Biomarker panel: 11/12 validated in the correct direction in both datasets.
+
+Pathway enrichment (validated overlap genes):
+
+Upregulated → Cell cycle, E2F Targets, Mitotic Sister Chromatid Segregation
+Downregulated → Cell adhesion molecules, TNF-alpha/NF-kB signaling, Regulation of Angiogenesis
+Conclusion
+
+Over 84–91% of GSE19188's significant gene signature was independently replicated in GSE18842, confirming the core NSCLC transcriptomic changes are consistent across patient cohorts rather than dataset-specific artifacts.
