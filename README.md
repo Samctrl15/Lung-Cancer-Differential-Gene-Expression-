@@ -45,9 +45,7 @@ The strong replication (>84–91% of GSE19188's signal recovered in GSE18842) ac
 
 | | |
 |---|---|
-| ![Upregulated Venn Diagram](<img width="2070" height="2107" alt="upregulated_venn_diagram" src="https://github.com/user-attachments/assets/e92009a1-af40-4ee3-9474-7dc75b6c4840" />
-) | ![Downregulated Venn Diagram](<img width="2070" height="2031" alt="downregulated_venn_diagram" src="https://github.com/user-attachments/assets/bdc3e224-5347-4993-8020-1e4fb6ac91ee" />
-) |
+| <img width="400" alt="Upregulated Venn Diagram" src="https://github.com/user-attachments/assets/e92009a1-af40-4ee3-9474-7dc75b6c4840" /> | <img width="400" alt="Downregulated Venn Diagram" src="https://github.com/user-attachments/assets/bdc3e224-5347-4993-8020-1e4fb6ac91ee" /> |
 | Upregulated gene overlap | Downregulated gene overlap |
 
 Full enrichment tables and gene-level overlap lists are in `results/`.
